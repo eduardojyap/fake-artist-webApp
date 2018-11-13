@@ -1,5 +1,5 @@
 {
-  "name": "indecision-app",
+  "name": "boilterplate-react-app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -31,7 +31,7 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "firebase": "^5.5.7",
     "history": "^4.7.2",
-    "moment": "^2.18.1",
+    "immutable": "^4.0.0-rc.12",
     "node-sass": "^4.10.0",
     "normalize.css": "^7.0.0",
     "numeral": "^2.0.6",

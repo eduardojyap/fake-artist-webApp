@@ -10,7 +10,7 @@ exports[`should correctly render LoginPage 1`] = `
     <h1
       className="box-layout__title"
     >
-      Expensify
+      Boilerplate
     </h1>
     <button
       className="button"
