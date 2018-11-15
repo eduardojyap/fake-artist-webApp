@@ -1,6 +1,9 @@
 import React from 'react';
 import Immutable from 'immutable';
 import Drawing from './Drawing';
+import { addLine } from '../actions/drawarea';
+import { connect } from 'react-redux';
+import PlayerList from './PlayerList';
 
 class DrawArea extends React.Component {
     constructor() {
@@ -14,6 +17,7 @@ class DrawArea extends React.Component {
       this.handleMouseDown = this.handleMouseDown.bind(this);
       this.handleMouseMove = this.handleMouseMove.bind(this);
       this.handleMouseUp = this.handleMouseUp.bind(this);
+      this.onClick = this.onClick.bind(this);
     }
   
     componentDidMount() {
@@ -61,18 +65,29 @@ class DrawArea extends React.Component {
       });
     }
   
+    onClick() {
+        this.props.addLine(this.state.currentLine)
+    }
+
     render() {
       return (
-        <div
-          className="drawArea"
-          ref="drawArea"
-          onMouseDown={this.handleMouseDown}
-          onMouseMove={this.handleMouseMove}
-        >
-          <Drawing line={this.state.currentLine} />
+        <div>
+            <div 
+                className="drawArea" 
+                ref="drawArea" 
+                onMouseDown={this.handleMouseDown} 
+                onMouseMove={this.handleMouseMove}>
+                    <Drawing line={this.state.currentLine} />
+            </div>
+            <button className="button" onClick={this.onClick}>Add line</button>
+            <PlayerList />
         </div>
       );
     }
-  }
+}
 
-export default DrawArea;
+const mapDispatchToProps = (dispatch) => ({
+    addLine: (line) => dispatch(addLine(line))
+});
+
+export default connect(undefined,mapDispatchToProps)(DrawArea);

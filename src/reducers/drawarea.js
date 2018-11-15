@@ -6,9 +6,9 @@ const drawAreaReducerDefaultState =
 
 export default (state = drawAreaReducerDefaultState,action) => {
     switch(action.type) {
-        case 'NEW_DRAW':
+        case 'NEW_LINE':
             return {
-                lines: state.lines.push(new Immutable.List([action.point])),
+                lines: state.lines.push(action.line),
                 isDrawing: true
             };
         case 'KEEP_DRAW':

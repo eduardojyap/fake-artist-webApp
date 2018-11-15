@@ -1,10 +1,22 @@
 import React from 'react';
 import DrawingLine from './DrawingLine';
+import { connect } from 'react-redux';
 
-const Drawing = ({line}) => (
-    <svg className = "drawing">
-        {<DrawingLine line={line} />}
-    </svg>
-)
+class Drawing extends React.Component {
+    render() {
+        return (
+            <svg className = "drawing">
+                {this.props.lines.map((line, index) => (
+                    <DrawingLine key={index} line={line} />
+                ))}
+                {this.props.line.size > 0 && <DrawingLine line={this.props.line} />}
+            </svg>
+        )
+    }
+}
 
-export default Drawing;
+const mapStateToProps = (state) => ({
+    lines: state.drawArea.lines
+})
+
+export default connect(mapStateToProps)(Drawing);

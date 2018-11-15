@@ -3,6 +3,11 @@ export const startDrawing = (point) => ({
     point
 });
 
+export const addLine = (line) => ({
+    type: 'NEW_LINE',
+    line
+});
+
 export const keepDrawing = (point) => ({
     type: 'KEEP_DRAW',
     point

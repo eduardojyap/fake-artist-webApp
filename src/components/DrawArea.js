@@ -46,9 +46,17 @@ class DrawArea extends React.Component {
       }
     render() {
         return (
-            <div className="drawArea" ref="drawArea" onMouseDown={this.handleMouseDown} onMouseMove={this.handleMouseMove}>
-            <Drawing lines={this.props.lines} />
-            </div>);
+            <div>
+                <div 
+                    className="drawArea" 
+                    ref="drawArea" 
+                    onMouseDown={this.handleMouseDown} 
+                    onMouseMove={this.handleMouseMove}>
+                        <Drawing lines={this.props.lines} />
+                </div>
+                <button>Add line</button>
+            </div>
+            );
     }
 }
 const mapStateToProps = (state) => {
