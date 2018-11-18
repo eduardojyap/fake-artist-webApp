@@ -6,7 +6,7 @@ const drawAreaReducerDefaultState =
 
 export default (state = drawAreaReducerDefaultState,action) => {
     switch(action.type) {
-        case 'NEW_LINE':
+        case 'ADD_LINE':
             return {
                 lines: state.lines.push(action.line),
                 isDrawing: true

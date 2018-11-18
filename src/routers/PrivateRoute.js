@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
-export const PrivateRoute = ({playing,databaseCode, component: Component, ...rest}) => (
+export const PrivateRoute = ({databaseCode, component: Component, ...rest}) => (
     <Route {...rest} component = {(props) => (
         (databaseCode) ? (
             <div>

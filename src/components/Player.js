@@ -2,7 +2,7 @@ import React from 'react';
 
 class Player extends React.Component {
     render() {
-        return <p>{this.props.name}</p>
+        return <p className={this.props.color}>{this.props.name}</p>
     }
 }
 

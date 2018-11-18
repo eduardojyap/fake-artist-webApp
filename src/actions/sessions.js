@@ -1,5 +1,4 @@
 import database from '../firebase/firebase';
-import { rejects } from 'assert';
 
 const generateAccessCode = () => {
     var code = "";
@@ -20,11 +19,24 @@ export const addPlayer = (userId) => {
 
 export const startAddPlayer = (databaseCode,name) => {
     return (dispatch) => {
-        return database.ref(`sessions/${databaseCode}/users`).push(name).then((ref) => {
+        return database.ref(`sessions/${databaseCode}/users`).push({name,color:null}).then((ref) => {
             dispatch(addPlayer(ref.key))
         })
     }
 }
+
+export const startStartGame = () => {
+    return (dispatch) => {
+        return database.ref(`sessions/${databaseCode}/length`).once('value').then((snapshot) => {
+            let order = [];
+            for (let i = 1; i <=snapshot.val();i++) {
+                order.push(i);
+            }
+            order = order.sort( () => Math.random() - 0.5)
+            return order;
+        })
+    };
+};
 
 export const createSession = (accessCode,databaseCode) => {
     return {
@@ -37,7 +49,7 @@ export const createSession = (accessCode,databaseCode) => {
 export const startCreateSession = (name,rounds) => {
     return (dispatch) => {
         const accessCode = generateAccessCode();
-        return database.ref('sessions').push({accessCode, rounds}).then((ref) => {
+        return database.ref('sessions').push({accessCode, rounds, playing: false, length: 0,indices: [0,0,0,0,0,0,0,0,0,0]}).then((ref) => {
             dispatch(createSession(accessCode,ref.key));
             dispatch(startAddPlayer(ref.key,name))
         })
@@ -57,11 +69,11 @@ export const startJoinSession = (name,accessCode) => {
         return database.ref('sessions').once('value').then((snapshot) => {
             let databaseCode = '';
             snapshot.forEach((childSnapshot) => {
-                console.log(childSnapshot)
                 const currCode = childSnapshot.val().accessCode;
                 if (currCode === accessCode) {
-                    databaseCode = childSnapshot.key;
-                    return;
+                    if (!childSnapshot.val().playing) {
+                        databaseCode = childSnapshot.key;
+                    }
                 }
             })
             return databaseCode;

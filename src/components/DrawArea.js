@@ -1,74 +1,102 @@
 import React from 'react';
 import Immutable from 'immutable';
-import { connect } from 'react-redux';
-import { keepDrawing, startDrawing, stopDrawing } from '../actions/drawarea'
 import Drawing from './Drawing';
-
+import { startAddLine, addLine } from '../actions/drawarea';
+import { connect } from 'react-redux';
+import database from '../firebase/firebase'
 
 class DrawArea extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleMouseUp = this.handleMouseUp.bind(this);
-        this.handleMouseDown = this.handleMouseDown.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
+    constructor() {
+      super();
+  
+      this.state = {
+        currentLine: new Immutable.List(),
+        isDrawing: false
+      };
+  
+      this.handleMouseDown = this.handleMouseDown.bind(this);
+      this.handleMouseMove = this.handleMouseMove.bind(this);
+      this.handleMouseUp = this.handleMouseUp.bind(this);
+      this.onClick = this.onClick.bind(this);
+    }
+  
+    componentDidMount() {
+      document.addEventListener("mouseup", this.handleMouseUp);
+      database.ref(`sessions/${this.props.databaseCode}/lines`).on('child_added',(childSnapshot) => {
+        this.props.addLine(Immutable.fromJS(JSON.parse(childSnapshot.val())));
+      })
+    }
+  
+    componentWillUnmount() {
+      document.removeEventListener("mouseup", this.handleMouseUp);
+    }
+  
+    handleMouseDown(mouseEvent) {
+      if (mouseEvent.button != 0) {
+        return;
+      }
+  
+      const point = this.relativeCoordinatesForEvent(mouseEvent);
+  
+      this.setState(prevState => ({
+        currentLine: prevState.currentLine.clear().push(point),
+        isDrawing: true
+      }));
+    }
+  
+    handleMouseMove(mouseEvent) {
+      if (!this.state.isDrawing) {
+        return;
+      }
+  
+      const point = this.relativeCoordinatesForEvent(mouseEvent);
+      
+      this.setState(prevState =>  ({
+        currentLine: prevState.currentLine.push(point)
+      }));
+    }
+  
+    handleMouseUp() {
+      this.setState({ isDrawing: false });
+    }
+  
+    relativeCoordinatesForEvent(mouseEvent) {
+      const boundingRect = this.refs.drawArea.getBoundingClientRect();
+      return new Immutable.Map({
+        x: mouseEvent.clientX - boundingRect.left,
+        y: mouseEvent.clientY - boundingRect.top,
+      });
+    }
+  
+    onClick() {
+        this.props.startAddLine(this.state.currentLine,this.props.databaseCode)
     }
 
-    relativeCoordinatesForEvent(mouseEvent) {
-        const boundingRect = this.refs.drawArea.getBoundingClientRect();
-        return new Immutable.Map({
-          x: mouseEvent.clientX - boundingRect.left,
-          y: mouseEvent.clientY - boundingRect.top,
-        });
-    }
-    
-    componentDidMount() {
-        document.addEventListener("mouseup", this.handleMouseUp);
-    }
-    componentWillUnmount() {
-        document.removeEventListener("mouseup", this.handleMouseUp);
-    }
-    handleMouseUp() {
-        this.props.stopDrawing();
-    }
-    handleMouseDown(mouseEvent) {
-        if (mouseEvent.button != 0) {
-            return;
-        }
-        const point = this.relativeCoordinatesForEvent(mouseEvent);
-        this.props.startDrawing(point);
-    }
-    handleMouseMove(mouseEvent) {
-        if (!this.props.isDrawing) {
-          return;
-        }
-        const point = this.relativeCoordinatesForEvent(mouseEvent);
-        this.props.keepDrawing(point);
-      }
     render() {
-        return (
-            <div>
-                <div 
-                    className="drawArea" 
-                    ref="drawArea" 
-                    onMouseDown={this.handleMouseDown} 
-                    onMouseMove={this.handleMouseMove}>
-                        <Drawing lines={this.props.lines} />
-                </div>
-                <button>Add line</button>
+      return (
+        <div>
+            <div 
+                className="drawArea" 
+                ref="drawArea" 
+                onMouseDown={this.handleMouseDown} 
+                onMouseMove={this.handleMouseMove}>
+                    <Drawing line={this.state.currentLine} />
             </div>
-            );
+            <button className="button" onClick={this.onClick}>Add line</button>
+        </div>
+      );
     }
 }
-const mapStateToProps = (state) => {
-    return {
-        isDrawing: state.drawArea.isDrawing,
-        lines: state.drawArea.lines
-    };
-};
-const mapDispatchToProps = (dispatch) => ({
-    startDrawing: (point) => dispatch(startDrawing(point)),
-    keepDrawing: (point) => dispatch(keepDrawing(point)),
-    stopDrawing: () => dispatch(stopDrawing())
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(DrawArea);
+const mapStateToProps = (state) => {
+  return {
+    databaseCode: state.sessions.databaseCode
+  }
+}
+
+const mapDispatchToProps = (dispatch,props) => ({
+    addLine: (line) => dispatch(addLine(line)),
+    startAddLine: (line,databaseCode) => dispatch(startAddLine(line,databaseCode))
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(DrawArea);

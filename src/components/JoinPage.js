@@ -8,7 +8,8 @@ class JoinPage extends React.Component {
         super();
         this.state = {
             accessCode: '',
-            name: ''
+            name: '',
+            errorMessage: ''
         }
         this.onNameChange = this.onNameChange.bind(this);
         this.onCodeChange = this.onCodeChange.bind(this);
@@ -28,16 +29,21 @@ class JoinPage extends React.Component {
             this.props.startJoinSession(this.state.name, this.state.accessCode).then(() => {
                 this.props.history.push('/lobby');
             }).catch(() => {
+                this.setState(()=>({errorMessage: "Match does not exist or already in progress."}))
             })
         }
     }
+
     render() {
         return (
             <div>
-                <input placeholder="Enter access code" onChange={this.onCodeChange}></input>
-                <input placeholder="Enter name" onChange={this.onNameChange}></input>
-                <button onClick={this.onClick}>Join</button>
-                <Link to="/">Back</Link>
+                {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
+                <div>
+                    <input placeholder="Enter access code" onChange={this.onCodeChange}></input>
+                    <input placeholder="Enter name" onChange={this.onNameChange}></input>
+                    <button onClick={this.onClick}>Join</button>
+                    <Link to="/">Back</Link>
+                </div>
             </div>
         )
     } 

@@ -1,7 +1,8 @@
 const sessionReducerDefaultState = {
     accessCode: '',
     databaseCode: '',
-    userId: ''
+    userId: '',
+    color: null
 }
 
 export default (state = sessionReducerDefaultState,action) => {
@@ -20,6 +21,7 @@ export default (state = sessionReducerDefaultState,action) => {
             }
         case 'LEAVE_SESSION':
             return {
+                ...state,
                 accessCode:'',
                 databaseCode:'',
                 userId:''

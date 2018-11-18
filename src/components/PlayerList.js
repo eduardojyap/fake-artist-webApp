@@ -1,44 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addPlayer } from '../actions/players'
+import Player from './player'
+import database from '../firebase/firebase'
 
 class PlayerList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: ''
-        }
-    }
-    onSubmit = (e) => {
-        e.preventDefault();
-        if (this.state.name !== "") {
-            this.props.addPlayer(this.state.name);
-        }
-    }
-    onNameChange = (e) => {
-        const name = e.target.value;
-        this.setState(() => ({name}));
-    }
     render() {
         return (
             <div>
-                <form onSubmit={this.onSubmit}>
-                    <input placeholder="Player Name" onChange={this.onNameChange}></input>
-                    <button>Add player</button>
-                </form>
-                {this.props.players.map((player,index) => (
-                    <p key={index}>{player.name}</p>
-                ))}
+                {this.props.names.map((user, index) => (<Player key={index} name={user.name} color={user.color} />))}
             </div>
         )
     }
 }
 
-const mapStateToProps = (state) => ({
-    players: state.players
-});
-const mapDispatchToProps = (dispatch) => ({
-    addPlayer: (name) => dispatch(addPlayer(name))
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);
+export default PlayerList;

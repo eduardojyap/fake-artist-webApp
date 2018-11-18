@@ -1,25 +1,45 @@
 import React from 'react';
 import database from '../firebase/firebase';
 import { connect } from 'react-redux'; 
-import Player from './player';
-import { startLeaveSession } from '../actions/sessions'
+import PlayerList from './PlayerList';
+import { startLeaveSession, startStartGame } from '../actions/sessions';
+import DrawArea from './DrawArea';
 
 class LobbyPage extends React.Component {
     constructor() {
         super()
         this.state = {
-            names: []
+            users: [],
+            playing: false
         }
         this.handleLeave = this.handleLeave.bind(this);
+        this.handleStart = this.handleStart.bind(this);
+        this.handleEnd = this.handleEnd.bind(this);
     }
     componentDidMount() {
         database.ref(`sessions/${this.props.databaseCode}/users`).on('value', (snapshot) => {
-            const newNames = []
+            const newUsers = []
             snapshot.forEach((childSnapshot) => {
-                newNames.push(childSnapshot.val())
+                newUsers.push(childSnapshot.val())
             })
-            this.setState({names: newNames})
+            this.setState({users: newUsers})
         });
+        database.ref(`sessions/${this.props.databaseCode}/playing`).on('value', (snapshot) => {
+            this.setState({playing: snapshot.val()});
+        })
+        let length;
+        database.ref(`sessions/${this.props.databaseCode}/length`).once('value').then((snapshot) => {
+            length = snapshot.val() + 1;
+        }).then(() => database.ref(`sessions/${this.props.databaseCode}`).update({length}))
+    }
+
+    componentWillUnmount() {
+        let length;
+        database.ref(`sessions/${this.props.databaseCode}/length`).once('value').then((snapshot) => {
+            length = snapshot.val() - 1;
+        }).then(() => database.ref(`sessions/${this.props.databaseCode}`).update({length}))
+        this.props.startLeaveSession(this.props.databaseCode,this.props.userId)
+
     }
 
     handleLeave(e) {
@@ -27,14 +47,29 @@ class LobbyPage extends React.Component {
         this.props.startLeaveSession(this.props.databaseCode,this.props.userId)
     }
 
+    handleStart(e) {
+        e.preventDefault()
+        /*
+        this.props.startStartGame();
+        */
+        database.ref(`sessions/${this.props.databaseCode}`).update({playing: true});
+    }
+
+    handleEnd(e) {
+        e.preventDefault()
+        
+        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false});
+    }
+
     render() {
         return (
             <div>
-                <h1>Waiting for players...</h1>
+                {this.state.playing ? <h1>Game Started </h1> : <h1>Waiting for players...</h1>}
                 <p>Access code: {this.props.accessCode}</p>
-                {this.state.names.map((name, index) => (<Player key={index} name={name} />))}
-                <button>Start Game</button>
-                <button onClick={this.handleLeave}>Leave Game</button>
+                <PlayerList names={this.state.users}/>
+                {this.state.playing && <DrawArea />}
+                {this.state.playing ? <button onClick={this.handleEnd}>End Game</button> : <button onClick={this.handleStart}>Start Game</button>}
+                <button onClick={this.handleLeave}> Leave Game</button>
             </div>
         );
     }
