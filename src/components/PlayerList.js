@@ -7,11 +7,10 @@ class PlayerList extends React.Component {
     render() {
         return (
             <div>
-                {this.props.names.map((user, index) => (<Player key={index} name={user.name} color={user.color} />))}
+                {this.props.users.map((user, index) => (<Player key={index} name={user.name} />))}
             </div>
         )
     }
 }
-
 
 export default PlayerList;

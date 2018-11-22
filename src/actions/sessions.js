@@ -19,8 +19,18 @@ export const addPlayer = (userId) => {
 
 export const startAddPlayer = (databaseCode,name) => {
     return (dispatch) => {
-        return database.ref(`sessions/${databaseCode}/users`).push({name,color:null}).then((ref) => {
-            dispatch(addPlayer(ref.key))
+        return database.ref(`sessions/${databaseCode}/indices`).once('value').then((snapshot)=> {
+            let order = [0,1,2,3,4,5,6,7,8,9];
+            order = order.sort( () => Math.random() - 0.5);
+            for (let i = 0; i < 10; i++) {
+                const childVal = snapshot.child(order[i]).val();
+                if (childVal.name === undefined) {
+                    database.ref(`sessions/${databaseCode}/indices/${order[i]}`).update({name}).then(() => {
+                        dispatch(addPlayer(order[i]))
+                    })
+                    return true;
+                }
+            }
         })
     }
 }
@@ -33,6 +43,8 @@ export const startStartGame = () => {
                 order.push(i);
             }
             order = order.sort( () => Math.random() - 0.5)
+            order.map((value) => {return {index: value}})
+            console.log(order);
             return order;
         })
     };
@@ -49,7 +61,10 @@ export const createSession = (accessCode,databaseCode) => {
 export const startCreateSession = (name,rounds) => {
     return (dispatch) => {
         const accessCode = generateAccessCode();
-        return database.ref('sessions').push({accessCode, rounds, playing: false, length: 0,indices: [0,0,0,0,0,0,0,0,0,0]}).then((ref) => {
+        let order = [0,1,2,3,4,5,6,7,8,9];
+        /*order = order.sort( () => Math.random() - 0.5);*/
+        order = order.map((value) => {return {index: value}});
+        return database.ref('sessions').push({accessCode, rounds, playing: false, length: 0,indices: order}).then((ref) => {
             dispatch(createSession(accessCode,ref.key));
             dispatch(startAddPlayer(ref.key,name))
         })
@@ -96,8 +111,8 @@ export const leaveSession = () => {
 
 export const startLeaveSession = (databaseCode,userId) => {
     return (dispatch) => {
-        return database.ref(`sessions/${databaseCode}/users/${userId}`).remove().then(() => {
-            database.ref(`sessions/${databaseCode}/users`).off()
+        return database.ref(`sessions/${databaseCode}/indices/${userId}/name`).remove().then(() => {
+            database.ref(`sessions/${databaseCode}/indices`).off()
             dispatch(leaveSession());
         })
     }

@@ -2,7 +2,8 @@ const sessionReducerDefaultState = {
     accessCode: '',
     databaseCode: '',
     userId: '',
-    color: null
+    color: null,
+    turn: false
 }
 
 export default (state = sessionReducerDefaultState,action) => {

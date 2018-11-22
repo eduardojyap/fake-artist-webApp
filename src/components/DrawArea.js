@@ -82,7 +82,7 @@ class DrawArea extends React.Component {
                 onMouseMove={this.handleMouseMove}>
                     <Drawing line={this.state.currentLine} />
             </div>
-            <button className="button" onClick={this.onClick}>Add line</button>
+            <button className="button" onClick={this.onClick} disabled={!this.props.turn}>Add line</button>
         </div>
       );
     }
@@ -90,7 +90,8 @@ class DrawArea extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    databaseCode: state.sessions.databaseCode
+    databaseCode: state.sessions.databaseCode,
+    turn: state.sessions.turn
   }
 }
 

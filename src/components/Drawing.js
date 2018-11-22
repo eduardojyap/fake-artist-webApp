@@ -16,7 +16,7 @@ class Drawing extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    lines: state.drawArea.lines
+    lines: state.drawArea.lines,
 })
 
 export default connect(mapStateToProps)(Drawing);
