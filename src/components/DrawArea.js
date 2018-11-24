@@ -70,6 +70,9 @@ class DrawArea extends React.Component {
   
     onClick() {
         this.props.startAddLine(this.state.currentLine,this.props.databaseCode)
+        this.setState(prevState => ({
+          currentLine: prevState.currentLine.clear()
+        }))
     }
 
     render() {
@@ -82,7 +85,7 @@ class DrawArea extends React.Component {
                 onMouseMove={this.handleMouseMove}>
                     <Drawing line={this.state.currentLine} />
             </div>
-            <button onClick={this.onClick} disabled={!this.props.turn}>Add line</button>
+            <button onClick={this.onClick} disabled={!this.props.turn || this.state.currentLine.isEmpty()}>Add line</button>
         </div>
       );
     }
