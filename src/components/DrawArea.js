@@ -82,7 +82,7 @@ class DrawArea extends React.Component {
                 onMouseMove={this.handleMouseMove}>
                     <Drawing line={this.state.currentLine} />
             </div>
-            <button className="button" onClick={this.onClick} disabled={!this.props.turn}>Add line</button>
+            <button onClick={this.onClick} disabled={!this.props.turn}>Add line</button>
         </div>
       );
     }

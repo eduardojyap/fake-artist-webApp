@@ -21,6 +21,11 @@ export default (state = drawAreaReducerDefaultState,action) => {
                 ...state,
                 isDrawing: false
             };
+        case 'REMOVE_LINES':
+            return {
+                ...state,
+                lines: new Immutable.List()
+            };
         default:
             return state;
     }

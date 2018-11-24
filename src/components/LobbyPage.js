@@ -2,7 +2,8 @@ import React from 'react';
 import database from '../firebase/firebase';
 import { connect } from 'react-redux'; 
 import PlayerList from './PlayerList';
-import { startLeaveSession, startStartGame } from '../actions/sessions';
+import { startLeaveSession } from '../actions/sessions';
+import { startRemoveLines } from '../actions/drawarea';
 import DrawArea from './DrawArea';
 
 class LobbyPage extends React.Component {
@@ -19,10 +20,6 @@ class LobbyPage extends React.Component {
         this.componentCleanup = this.componentCleanup.bind(this);
     }
     componentCleanup() {
-        let length;
-        database.ref(`sessions/${this.props.databaseCode}/length`).once('value').then((snapshot) => {
-            length = snapshot.val() - 1;
-        }).then(() => database.ref(`sessions/${this.props.databaseCode}`).update({length}))
         database.ref(`sessions/${this.props.databaseCode}/indices`).off()
         database.ref(`sessions/${this.props.databaseCode}/playing`).off();
         database.ref(`sessions/${this.props.databaseCode}/turn`).off();
@@ -41,10 +38,6 @@ class LobbyPage extends React.Component {
         database.ref(`sessions/${this.props.databaseCode}/playing`).on('value', (snapshot) => {
             this.setState({playing: snapshot.val()});
         })
-        let length;
-        database.ref(`sessions/${this.props.databaseCode}/length`).once('value').then((snapshot) => {
-            length = snapshot.val() + 1;
-        }).then(() => database.ref(`sessions/${this.props.databaseCode}`).update({length}))
         window.addEventListener('beforeunload', this.componentCleanup);
         database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {
             console.log(snapshot.val())
@@ -94,7 +87,8 @@ class LobbyPage extends React.Component {
 
     handleEnd(e) {
         e.preventDefault()
-        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false});
+        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false})
+        this.props.startRemoveLines(this.props.databaseCode);
     }
 
     render() {
@@ -121,6 +115,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        startRemoveLines: (databaseCode) => dispatch(startRemoveLines(databaseCode)),
         startLeaveSession: (databaseCode,userId) => dispatch(startLeaveSession(databaseCode,userId))
     };
 }

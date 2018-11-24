@@ -35,20 +35,6 @@ export const startAddPlayer = (databaseCode,name) => {
     }
 }
 
-export const startStartGame = () => {
-    return (dispatch) => {
-        return database.ref(`sessions/${databaseCode}/length`).once('value').then((snapshot) => {
-            let order = [];
-            for (let i = 1; i <=snapshot.val();i++) {
-                order.push(i);
-            }
-            order = order.sort( () => Math.random() - 0.5)
-            order.map((value) => {return {index: value}})
-            console.log(order);
-            return order;
-        })
-    };
-};
 
 export const createSession = (accessCode,databaseCode) => {
     return {
@@ -64,7 +50,7 @@ export const startCreateSession = (name,rounds) => {
         let order = [0,1,2,3,4,5,6,7,8,9];
         /*order = order.sort( () => Math.random() - 0.5);*/
         order = order.map((value) => {return {index: value}});
-        return database.ref('sessions').push({accessCode, rounds, playing: false, length: 0,indices: order}).then((ref) => {
+        return database.ref('sessions').push({accessCode, rounds, playing: false,indices: order}).then((ref) => {
             dispatch(createSession(accessCode,ref.key));
             dispatch(startAddPlayer(ref.key,name))
         })

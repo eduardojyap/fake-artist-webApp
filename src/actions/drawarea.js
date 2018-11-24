@@ -18,6 +18,18 @@ export const startAddLine = (line,databaseCode) => {
     }
 }
 
+export const removeLines = () => ({
+    type: 'REMOVE_LINES'
+})
+
+export const startRemoveLines = (databaseCode) => {
+    return (dispatch) => {
+        return database.ref(`sessions/${databaseCode}/lines`).remove().then(() => {
+            dispatch(removeLines());
+        })
+    }
+}
+
 export const keepDrawing = (point) => ({
     type: 'KEEP_DRAW',
     point
