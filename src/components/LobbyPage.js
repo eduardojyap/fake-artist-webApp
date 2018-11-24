@@ -10,7 +10,8 @@ class LobbyPage extends React.Component {
         super()
         this.state = {
             users: [],
-            playing: false
+            playing: false,
+            turn: false
         }
         this.handleLeave = this.handleLeave.bind(this);
         this.handleStart = this.handleStart.bind(this);
@@ -24,6 +25,7 @@ class LobbyPage extends React.Component {
         }).then(() => database.ref(`sessions/${this.props.databaseCode}`).update({length}))
         database.ref(`sessions/${this.props.databaseCode}/indices`).off()
         database.ref(`sessions/${this.props.databaseCode}/playing`).off();
+        database.ref(`sessions/${this.props.databaseCode}/turn`).off();
         this.props.startLeaveSession(this.props.databaseCode,this.props.userId);
     }
     componentDidMount() {
@@ -44,6 +46,15 @@ class LobbyPage extends React.Component {
             length = snapshot.val() + 1;
         }).then(() => database.ref(`sessions/${this.props.databaseCode}`).update({length}))
         window.addEventListener('beforeunload', this.componentCleanup);
+        database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {
+            console.log(snapshot.val())
+            console.log(this.props.userId)
+            if (snapshot.val() == this.props.userId) {
+                this.setState({turn: true});
+            } else if (this.state.turn == true) {
+                this.setState({turn: false});
+            }
+        })
     }
 
     componentWillUnmount() {
@@ -91,8 +102,8 @@ class LobbyPage extends React.Component {
             <div>
                 {this.state.playing ? <h1>Game Started </h1> : <h1>Waiting for players...</h1>}
                 <p>Access code: {this.props.accessCode}</p>
-                <PlayerList users={this.state.users} playing={this.state.playing}/>
-                {this.state.playing && <DrawArea />}
+                <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing}/>
+                {this.state.playing && <DrawArea turn={this.state.turn}/>}
                 {this.state.playing ? <button onClick={this.handleEnd}>End Game</button> : <button onClick={this.handleStart}>Start Game</button>}
                 <button onClick={this.handleLeave}> Leave Game</button>
             </div>

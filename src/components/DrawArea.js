@@ -90,8 +90,7 @@ class DrawArea extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    databaseCode: state.sessions.databaseCode,
-    turn: state.sessions.turn
+    databaseCode: state.sessions.databaseCode
   }
 }
 
