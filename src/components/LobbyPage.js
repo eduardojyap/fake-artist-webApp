@@ -44,7 +44,12 @@ class LobbyPage extends React.Component {
             this.setState({users: newUsers})
         });
         database.ref(`sessions/${this.props.databaseCode}/playing`).on('value', (snapshot) => {
-            this.setState({playing: snapshot.val()});
+            this.setState((prevState) => {
+                if (!prevState.playing) {
+                    this.props.removeLines();
+                }
+                return {playing: snapshot.val()};
+            })
         })
         window.addEventListener('beforeunload', this.componentCleanup);
         database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {
