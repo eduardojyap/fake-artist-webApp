@@ -14,7 +14,20 @@
 .path {
     fill: none;
     stroke-width: 3px;
-    stroke: black;
     stroke-linejoin: round;
     stroke-linecap: round;
-  }
+}
+
+@for $i from 1 through length($player-colors) {
+    .player-#{$i} {
+        @extend .path;
+        stroke: nth($player-colors,$i);
+    }
+}
+
+@for $i from 1 through length($player-colors) {
+    .fontcolor-#{$i} {
+        font-size: $m-size;
+        color: nth($player-colors,$i);
+    }
+}

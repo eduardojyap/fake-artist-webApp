@@ -5,15 +5,18 @@ export const startDrawing = (point) => ({
     point
 });
 
-export const addLine = (line) => ({
-    type: 'ADD_LINE',
-    line
-});
+export const addLine = (line, turnId) => {
+    return {
+        type: 'ADD_LINE',
+        line,
+        turnId
+    }
+};
 
-export const startAddLine = (line,databaseCode) => {
+export const startAddLine = (line,databaseCode,turnId) => {
     return (dispatch) => {
-        return database.ref(`sessions/${databaseCode}/lines`).push(JSON.stringify(line.toJSON())).then(() => {
-            dispatch(addLine(line));
+        return database.ref(`sessions/${databaseCode}/lines`).push({line: JSON.stringify(line.toJSON()), turnId}).then(() => {
+            dispatch(addLine(line,turnId));
         })
     }
 }

@@ -11,8 +11,7 @@ class CreatePage extends React.Component {
         this.onNameChange = this.onNameChange.bind(this);
         this.onRoundsChange = this.onRoundsChange.bind(this);
         this.state = {
-            name: '',
-            rounds: 2
+            name: ''
         }
     }
     onNameChange = (e) => {
@@ -21,8 +20,8 @@ class CreatePage extends React.Component {
     }
     onClick(e) {
         e.preventDefault();
-        if (this.state.name && this.state.rounds) {
-            this.props.startCreateSession(this.state.name,this.state.rounds).then(() => {
+        if (this.state.name) {
+            this.props.startCreateSession(this.state.name).then(() => {
                 this.props.history.push('/lobby');
             }
             )
@@ -38,7 +37,7 @@ class CreatePage extends React.Component {
         return (    
             <div>
                 <input placeholder="Enter your name" onChange={this.onNameChange}></input>
-                <p># of rounds<input value={this.state.rounds} onChange={this.onRoundsChange}></input></p>
+                {/*<p># of rounds<input value={this.state.rounds} onChange={this.onRoundsChange}></input></p>*/}
                 <button onClick={this.onClick}>Create</button>
                 <Link to="/">Back</Link>
             </div>
@@ -46,7 +45,7 @@ class CreatePage extends React.Component {
     }
 }
 const mapDispatchToProps = (dispatch) => ({
-    startCreateSession: (name,rounds) => dispatch(startCreateSession(name,rounds)),
+    startCreateSession: (name) => dispatch(startCreateSession(name)),
     addPlayer: (name) => dispatch(addPlayer(name))
 })
 

@@ -23,7 +23,8 @@ class DrawArea extends React.Component {
     componentDidMount() {
       document.addEventListener("mouseup", this.handleMouseUp);
       database.ref(`sessions/${this.props.databaseCode}/lines`).on('child_added',(childSnapshot) => {
-        this.props.addLine(Immutable.fromJS(JSON.parse(childSnapshot.val())));
+        const line = Immutable.fromJS(JSON.parse(childSnapshot.val().line))
+        this.props.addLine(line,childSnapshot.val().turnId);
       })
     }
   
@@ -69,7 +70,7 @@ class DrawArea extends React.Component {
     }
   
     onClick() {
-        this.props.startAddLine(this.state.currentLine,this.props.databaseCode)
+        this.props.startAddLine(this.state.currentLine,this.props.databaseCode,this.props.turnId)
         this.setState(prevState => ({
           currentLine: prevState.currentLine.clear()
         }))
@@ -83,7 +84,7 @@ class DrawArea extends React.Component {
                 ref="drawArea" 
                 onMouseDown={this.handleMouseDown} 
                 onMouseMove={this.handleMouseMove}>
-                    <Drawing line={this.state.currentLine} />
+                    <Drawing line={this.state.currentLine} turn={this.props.turn} turnId={this.props.turnId}/>
             </div>
             <button onClick={this.onClick} disabled={!this.props.turn || this.state.currentLine.isEmpty()}>Add line</button>
         </div>
@@ -98,8 +99,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch,props) => ({
-    addLine: (line) => dispatch(addLine(line)),
-    startAddLine: (line,databaseCode) => dispatch(startAddLine(line,databaseCode))
+    addLine: (line,turnId) => dispatch(addLine(line,turnId)),
+    startAddLine: (line,databaseCode,turnId) => dispatch(startAddLine(line,databaseCode,turnId))
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(DrawArea);

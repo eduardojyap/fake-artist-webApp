@@ -2,8 +2,7 @@ const sessionReducerDefaultState = {
     accessCode: '',
     databaseCode: '',
     userId: '',
-    color: null,
-    turn: false
+    turnId: 99
 }
 
 export default (state = sessionReducerDefaultState,action) => {
@@ -31,6 +30,11 @@ export default (state = sessionReducerDefaultState,action) => {
             return {
                 ...state,
                 userId: action.userId
+            }
+        case 'SET_TURN_ID':
+            return {
+                ...state,
+                turnId: action.turnId
             }
         default:
             return state;

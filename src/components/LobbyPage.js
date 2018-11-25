@@ -2,9 +2,11 @@ import React from 'react';
 import database from '../firebase/firebase';
 import { connect } from 'react-redux'; 
 import PlayerList from './PlayerList';
-import { startLeaveSession } from '../actions/sessions';
-import { startRemoveLines } from '../actions/drawarea';
+import { startLeaveSession,setTurnId } from '../actions/sessions';
+import { startRemoveLines, removeLines } from '../actions/drawarea';
+import items from '../items';
 import DrawArea from './DrawArea';
+import CategoryObject from './CategoryObject'
 
 class LobbyPage extends React.Component {
     constructor() {
@@ -12,19 +14,25 @@ class LobbyPage extends React.Component {
         this.state = {
             users: [],
             playing: false,
-            turn: false
+            turn: false,
+            turnId: -1,
+            category: '',
+            name:''
         }
         this.handleLeave = this.handleLeave.bind(this);
         this.handleStart = this.handleStart.bind(this);
         this.handleEnd = this.handleEnd.bind(this);
         this.componentCleanup = this.componentCleanup.bind(this);
     }
+
     componentCleanup() {
         database.ref(`sessions/${this.props.databaseCode}/indices`).off()
         database.ref(`sessions/${this.props.databaseCode}/playing`).off();
         database.ref(`sessions/${this.props.databaseCode}/turn`).off();
+        database.ref(`sessions/${this.props.databaseCode}/object`).off();
         this.props.startLeaveSession(this.props.databaseCode,this.props.userId);
     }
+
     componentDidMount() {
         database.ref(`sessions/${this.props.databaseCode}/indices`).on('value', (snapshot) => {
             const newUsers = []
@@ -40,14 +48,23 @@ class LobbyPage extends React.Component {
         })
         window.addEventListener('beforeunload', this.componentCleanup);
         database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {
-            console.log(snapshot.val())
-            console.log(this.props.userId)
+            this.setState({turnId: snapshot.val()});
             if (snapshot.val() == this.props.userId) {
                 this.setState({turn: true});
             } else if (this.state.turn == true) {
                 this.setState({turn: false});
             }
         })
+        database.ref(`sessions/${this.props.databaseCode}/object`).on('value', (snapshot) => {
+            const object = snapshot.val();
+            if (object !== null) {
+                if (object.spy === this.props.userId) {
+                    this.setState({category:object.category,name:''})
+                } else {
+                    this.setState({category: object.category, name: object.name})
+                }
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -57,37 +74,22 @@ class LobbyPage extends React.Component {
 
     handleLeave(e) {
         e.preventDefault();
-        this.props.startLeaveSession(this.props.databaseCode,this.props.userId)
+        this.props.startLeaveSession(this.props.databaseCode,this.props.userId);
+        this.props.removeLines();
     }
 
     handleStart(e) {
         e.preventDefault()
-        /*
-        this.props.startStartGame();
-        */
-        let order = [0,1,2,3,4,5,6,7,8,9];
-        order = order.sort( () => Math.random() - 0.5)
-        database.ref(`sessions/${this.props.databaseCode}/indices/`).once('value').then( (snapshot) => {
-            database.ref(`sessions/${this.props.databaseCode}/indices/`).update({
-                0:snapshot.child(order[0]).val(),
-                1:snapshot.child(order[1]).val(),
-                2:snapshot.child(order[2]).val(),
-                3:snapshot.child(order[3]).val(),
-                4:snapshot.child(order[4]).val(),
-                5:snapshot.child(order[5]).val(),
-                6:snapshot.child(order[6]).val(),
-                7:snapshot.child(order[7]).val(),
-                8:snapshot.child(order[8]).val(),
-                9:snapshot.child(order[9]).val()
-            })
-        }).then(() => {
-            database.ref(`sessions/${this.props.databaseCode}`).update({playing: true});
-        })        
+        const i = Math.floor(Math.random() * items.length);
+        const spy = Math.floor(Math.random() * this.state.users.length);
+        database.ref(`sessions/${this.props.databaseCode}/object`).set({...items[i], spy}).then(() => {
+            database.ref(`sessions/${this.props.databaseCode}`).update({playing: true})
+        })
     }
 
     handleEnd(e) {
         e.preventDefault()
-        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false})
+        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false, turn: -1})
         this.props.startRemoveLines(this.props.databaseCode);
     }
 
@@ -96,8 +98,9 @@ class LobbyPage extends React.Component {
             <div>
                 {this.state.playing ? <h1>Game Started </h1> : <h1>Waiting for players...</h1>}
                 <p>Access code: {this.props.accessCode}</p>
-                <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing}/>
-                {this.state.playing && <DrawArea turn={this.state.turn}/>}
+                {this.state.playing && <CategoryObject category={this.state.category} name={this.state.name}/>}
+                <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing} turnId={this.state.turnId}/>
+                {this.state.playing && <DrawArea turn={this.state.turn} turnId={this.state.turnId}/>}
                 {this.state.playing ? <button onClick={this.handleEnd}>End Game</button> : <button onClick={this.handleStart}>Start Game</button>}
                 <button onClick={this.handleLeave}> Leave Game</button>
             </div>
@@ -116,7 +119,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startRemoveLines: (databaseCode) => dispatch(startRemoveLines(databaseCode)),
-        startLeaveSession: (databaseCode,userId) => dispatch(startLeaveSession(databaseCode,userId))
+        removeLines: () => dispatch(removeLines()),
+        startLeaveSession: (databaseCode,userId) => dispatch(startLeaveSession(databaseCode,userId)),
+        setTurnId: (turnId) => dispatch(setTurnId(turnId))
     };
 }
 
