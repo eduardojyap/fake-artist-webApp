@@ -2,6 +2,9 @@ import React from 'react'
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
 import { startJoinSession } from '../actions/sessions';
+import { Header } from './Header';
+import Signature from './Signature';
+import { Button } from 'react-bootstrap';
 
 class JoinPage extends React.Component {
     constructor() {
@@ -13,6 +16,7 @@ class JoinPage extends React.Component {
         }
         this.onNameChange = this.onNameChange.bind(this);
         this.onCodeChange = this.onCodeChange.bind(this);
+        this.handleBack = this.handleBack.bind(this);
         this.onClick = this.onClick.bind(this);
     }
     onNameChange = (e) => {
@@ -33,17 +37,30 @@ class JoinPage extends React.Component {
             })
         }
     }
-
+    handleBack(e) {
+        e.preventDefault();
+        this.props.history.push("/");
+    }
     render() {
         return (
             <div>
-                {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
-                <div>
-                    <input placeholder="Enter access code" onChange={this.onCodeChange}></input>
-                    <input placeholder="Enter name" onChange={this.onNameChange}></input>
-                    <button onClick={this.onClick}>Join</button>
-                    <Link to="/">Back</Link>
+                <Header />
+                <div className="content-container content-center">
+                    <div className="form__content">
+                        {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
+                        <div className="form__input">
+                            <input className="form-control" placeholder="Enter access code" onChange={this.onCodeChange}></input>
+                        </div>
+                        <div className="form__input">    
+                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange}></input>
+                        </div>
+                        <div className="form__buttons">
+                            <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick}>Join</Button>
+                            <Button bsClass="btn btn-outline-dark btn-m" onClick={this.handleBack}>Back</Button>
+                        </div>
+                    </div>
                 </div>
+                <Signature />
             </div>
         )
     } 

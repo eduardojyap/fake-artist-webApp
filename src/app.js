@@ -18,7 +18,7 @@ const jsx = (
 );
 
 
-ReactDOM.render(<div className="center-screen">{jsx}</div>,document.getElementById('app'));
+ReactDOM.render(<div>{jsx}</div>,document.getElementById('app'));
 /*
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
