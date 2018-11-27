@@ -1,18 +1,9 @@
-.header {
-    background: $dark-blue;
-}
-
 .header__title {
-    color:white;
-    text-decoration:none;
-    h1 {
-        margin: 0;
-    }
+    font-size: 2.0rem;
+    font-weight: 200;
+    line-height: 1.5;   
 }
 
 .header__content {
-    align-items:center;
-    display:flex;
-    justify-content:space-between;
-    padding: $m-size 0
+    padding: $m-size 0;
 }

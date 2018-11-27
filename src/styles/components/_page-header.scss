@@ -1,8 +1,12 @@
 .page-header {
-    background: $off-white;
-    margin-bottom: $l-size;
-    padding: $l-size 0;
-  }
+    margin-bottom: $m-size;
+    margin-top: $m-size;
+    padding: $m-size 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid;
+}
   
   .page-header__actions {
     margin-top: $m-size;

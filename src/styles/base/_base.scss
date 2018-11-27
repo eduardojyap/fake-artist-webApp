@@ -2,13 +2,19 @@
     box-sizing: border-box;
   }
   
-  html {
-    font-size: 62.5%;
+  .center-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
   }
   
+
   body {
     color: $dark-grey;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: sans-serif;
     font-size: $m-size;
     line-height: 1.6;
   }

@@ -9,22 +9,20 @@ import JoinPage from '../components/JoinPage';
 import LobbyPage from '../components/LobbyPage';
 import DrawPage from '../components/DrawPage';
 import PrivateRoute from './PrivateRoute'
-
+import { Grid,Row } from 'react-bootstrap'
 
 export const history = createHistory();
 
 const AppRouter = () => (
     <Router history={history}>
-        <div>
-            <Header/>
-                <Switch>
-                <Route path="/" component={NewPage} exact={true}/>
-                <Route path="/create" component={CreatePage} exact={true}/>
-                <Route path="/join" component={JoinPage} exact={true}/>
-                <PrivateRoute path="/lobby" component={LobbyPage} exact={true}/>
-                <PrivateRoute path="/draw" component={DrawPage} exact={true}/>
-            </Switch>
-        </div>
+                    <Switch>
+                    
+                        <Route path="/" component={NewPage} exact={true}/>
+                        <Route path="/create" component={CreatePage} exact={true}/>
+                        <Route path="/join" component={JoinPage} exact={true}/>
+                        <PrivateRoute path="/lobby" component={LobbyPage} exact={true}/>
+                        <PrivateRoute path="/draw" component={DrawPage} exact={true}/>
+                    </Switch>
     </Router>
 );
 

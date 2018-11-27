@@ -1,13 +1,33 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
 import Signature from './Signature';
-
-const NewPage = () => (
-    <div>
-        <Link to="/create">New Game</Link>
-        <Link to="/join">Join Game</Link>
-        <Signature />
-    </div>
-)
+import { Grid, Row, Button, Col } from 'react-bootstrap';
+import { Header } from './Header';
+class NewPage extends React.Component {
+    constructor() {
+        super();
+        this.handleCreate = this.handleCreate.bind(this);
+        this.handleJoin = this.handleJoin.bind(this);
+    }
+    handleCreate() {
+        this.props.history.push('/create');
+    }
+    handleJoin() {
+        this.props.history.push('/join');
+    }
+    render() {
+        return (
+            <div>
+                    <Header/>
+                    <div className="content-container content-center">
+                        <div className="form__content">
+                            <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.handleCreate}>New Game</Button>
+                            <Button bsClass="btn btn-outline-dark btn-m" onClick={this.handleJoin}>Join Game</Button>
+                        </div>    
+                    </div>
+                    <Signature />
+            </div>
+        )
+    }
+} 
 
 export default NewPage;

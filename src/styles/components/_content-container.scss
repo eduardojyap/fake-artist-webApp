@@ -2,4 +2,11 @@
     margin: 0 auto;
     padding: 0 $m-size;
     max-width:80rem;
+    text-align: center
+}
+
+.content-center {
+    display: flex;
+    align-items: center;
+    justify-content:center;
 }

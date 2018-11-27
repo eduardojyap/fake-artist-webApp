@@ -8,7 +8,7 @@ export default (state = drawAreaReducerDefaultState,action) => {
     switch(action.type) {
         case 'ADD_LINE':
             return {
-                lines: state.lines.push({line: action.line,turnId:action.turnId}),
+                lines: state.lines.push({line: action.line, turnId: action.turnId}),
                 isDrawing: true
             };
         case 'KEEP_DRAW':

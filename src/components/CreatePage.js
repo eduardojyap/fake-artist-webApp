@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { startCreateSession } from '../actions/sessions'
 import { addPlayer } from '../actions/players'
+import { Header } from './Header';
+import Signature from './Signature';
+import { Button } from 'react-bootstrap';
 
 class CreatePage extends React.Component {
     constructor() {
@@ -10,6 +13,7 @@ class CreatePage extends React.Component {
         this.onClick = this.onClick.bind(this);
         this.onNameChange = this.onNameChange.bind(this);
         this.onRoundsChange = this.onRoundsChange.bind(this);
+        this.handleBack = this.handleBack.bind(this);
         this.state = {
             name: ''
         }
@@ -33,13 +37,27 @@ class CreatePage extends React.Component {
             this.setState(()=>({rounds}));
         }
     }
+    handleBack(e) {
+        e.preventDefault();
+        this.props.history.push("/");
+    }
+
     render() {
         return (    
             <div>
-                <input placeholder="Enter your name" onChange={this.onNameChange}></input>
-                {/*<p># of rounds<input value={this.state.rounds} onChange={this.onRoundsChange}></input></p>*/}
-                <button onClick={this.onClick}>Create</button>
-                <Link to="/">Back</Link>
+                <Header />
+                <div className="content-container content-center">
+                    <div className="form__content">
+                        <div className="form__input">
+                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange}></input>
+                        </div>
+                        <div className="form__buttons">
+                            <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick}>Create</Button>
+                            <Button bsClass="btn btn-outline-dark btn-m" onClick={this.handleBack}>Back</Button>
+                        </div>
+                    </div>
+                </div>
+                <Signature />
             </div>
         )
     }
