@@ -1,0 +1,18 @@
+.category__text {
+    font-size: 1.6rem;
+    font-weight: 200;
+    line-height:1.0;
+}
+
+.category__button {
+    position: float;
+    font-size: 0.8rem;
+    font-weight: 200;
+    line-height:1.0;
+    border:none;
+    background: none;
+    outline:none;
+}
+.category__button:focus {
+    outline:0;
+}

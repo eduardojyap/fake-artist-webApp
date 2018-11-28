@@ -4,12 +4,11 @@ import Player from './Player'
 class PlayerList extends React.Component {
     render() {
         return (
-            <div>
-                {this.props.users.map((user, index) => (
-                    <div key={index}>
-                    <Player name={user.name} index={user.index}/>
-                    {(this.props.playing && (this.props.turnId === user.index)) && " - your turn"}
-                    </div>))}
+            <div className="content-container content-center">
+                <div className="playerlist">
+                    {this.props.users.map((user, index) => (
+                        <Player key={index} name={user.name} index={user.index} playing={this.props.playing} turnId={this.props.turnId}/>))}
+                </div>
             </div>
         )
     }

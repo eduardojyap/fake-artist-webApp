@@ -1,0 +1,36 @@
+.player {
+    font-size: 19px;
+    font-weight: 200;   
+    text-align:left;
+    box-sizing:border-box;
+    width:50%;
+    float:left;
+}
+
+.turn {
+    background-color: #A9A9A9;
+    color: white;
+}
+
+.playerlist {
+    overflow:hidden;
+    width: 360px;
+    padding: 8px 0;
+    border-top: 0.1px solid;
+    border-color: 	#DCDCDC;
+}
+
+@for $i from 1 through length($player-colors) {
+    .player-#{$i} {
+        @extend .path;
+        stroke: nth($player-colors,$i);
+    }
+}
+
+@for $i from 1 through length($player-colors) {
+    .fontcolor-#{$i} {
+        font-size: 19px;
+        padding: 0 10px;
+        color: nth($player-colors,$i);
+    }
+}

@@ -7,6 +7,7 @@ import { startRemoveLines, removeLines } from '../actions/drawarea';
 import items from '../items';
 import DrawArea from './DrawArea';
 import CategoryObject from './CategoryObject'
+import { Button } from 'react-bootstrap';
 
 class LobbyPage extends React.Component {
     constructor() {
@@ -26,11 +27,14 @@ class LobbyPage extends React.Component {
     }
 
     componentCleanup() {
-        database.ref(`sessions/${this.props.databaseCode}/indices`).off()
-        database.ref(`sessions/${this.props.databaseCode}/playing`).off();
-        database.ref(`sessions/${this.props.databaseCode}/turn`).off();
-        database.ref(`sessions/${this.props.databaseCode}/object`).off();
-        this.props.startLeaveSession(this.props.databaseCode,this.props.userId);
+        const databaseCode = this.props.databaseCode;
+        this.props.startLeaveSession(this.props.databaseCode,this.props.userId).then(() => {
+            database.ref(`sessions/${databaseCode}/indices`).off()
+            database.ref(`sessions/${databaseCode}/playing`).off();
+            database.ref(`sessions/${databaseCode}/turn`).off();
+            database.ref(`sessions/${databaseCode}/object`).off();
+        });
+        
     }
 
     componentDidMount() {
@@ -51,7 +55,10 @@ class LobbyPage extends React.Component {
                 return {playing: snapshot.val()};
             })
         })
-        window.addEventListener('beforeunload', this.componentCleanup);
+        window.addEventListener('beforeunload', (e) => {
+            e.preventDefault()
+            this.componentCleanup();
+        });
         database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {
             this.setState({turnId: snapshot.val()});
             if (snapshot.val() == this.props.userId) {
@@ -101,13 +108,22 @@ class LobbyPage extends React.Component {
     render() {
         return (
             <div>
-                {this.state.playing ? <h1>Game Started </h1> : <h1>Waiting for players...</h1>}
-                <p>Access code: {this.props.accessCode}</p>
-                {this.state.playing && <CategoryObject category={this.state.category} name={this.state.name}/>}
+                {this.state.playing ? <CategoryObject category={this.state.category} name={this.state.name}/> : 
+                <div className="content-container">
+                    <div className="header__content">
+                        <h1 className="header__title">Waiting for players...</h1>
+                    </div>
+                    <p>Access code: {this.props.accessCode}</p>
+                </div>}
+                
                 <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing} turnId={this.state.turnId}/>
                 {this.state.playing && <DrawArea turn={this.state.turn} turnId={this.state.turnId}/>}
-                {this.state.playing ? <button onClick={this.handleEnd}>End Game</button> : <button onClick={this.handleStart}>Start Game</button>}
-                <button onClick={this.handleLeave}> Leave Game</button>
+                <div className="content-container content-center">
+                    <div className="form__content__top">
+                        {this.state.playing ? <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.handleEnd}>End Game</Button> : <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.handleStart}>Start Game</Button>}
+                        <Button bsClass="btn btn-outline-dark btn-m" onClick={this.handleLeave}> Leave Game</Button>
+                    </div>
+                </div>
             </div>
         );
     }

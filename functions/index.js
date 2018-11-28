@@ -6,6 +6,15 @@
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+
+const shuffle = (a) => {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
 exports.onGameStart = 
 functions.database.ref('/sessions/{databaseCode}/playing')
 .onUpdate((change) => {
@@ -15,7 +24,7 @@ functions.database.ref('/sessions/{databaseCode}/playing')
             return snapshot.val().indices;
         }).then( (indices) => {
             let order = [0,1,2,3,4,5,6,7,8,9];
-            order = order.sort( () => Math.random() - 0.5)
+            order = shuffle(order)
             for (let i = 0; i < 10; i++) {
                 if (indices[order[i]].name !== undefined) {
                     return change.after.ref.parent.update({turn: indices[order[i]].index, order})
