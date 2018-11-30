@@ -98,7 +98,7 @@ class DrawArea extends React.Component {
       const boundingRect = this.refs.drawArea.getBoundingClientRect();
       return new Immutable.Map({
         x: (touchEvent.targetTouches[0] ? touchEvent.targetTouches[0].pageX : touchEvent.changedTouches[touchEvent.changedTouches.length-1].pageX) - boundingRect.left,
-        y: (touchEvent.targetTouches[0] ? touchEvent.targetTouches[0].pageY : touchEvent.changedTouches[touchEvent.changedTouches.length-1].pageY) + document.body.scrollTop - boundingRect.top,
+        y: (touchEvent.targetTouches[0] ? touchEvent.targetTouches[0].pageY : touchEvent.changedTouches[touchEvent.changedTouches.length-1].pageY) - window.scrollY - boundingRect.top
       });
     }
   
