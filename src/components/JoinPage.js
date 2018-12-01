@@ -19,14 +19,21 @@ class JoinPage extends React.Component {
         this.handleBack = this.handleBack.bind(this);
         this.onClick = this.onClick.bind(this);
     }
+    
     onNameChange = (e) => {
         const name = e.target.value;
-        this.setState(() => ({name}));
+        if (name.length < 14) {
+            this.setState(() => ({name}));
+        }
     }
+
     onCodeChange = (e) => {
         const accessCode = e.target.value;
-        this.setState(() => ({accessCode}));
+        if (accessCode.length < 7) {
+            this.setState(() => ({accessCode}));
+        }
     }
+
     onClick(e) {
         e.preventDefault();
         if (this.state.name && this.state.accessCode) {
@@ -37,10 +44,12 @@ class JoinPage extends React.Component {
             })
         }
     }
+
     handleBack(e) {
         e.preventDefault();
         this.props.history.push("/");
     }
+
     render() {
         return (
             <div>
@@ -49,10 +58,10 @@ class JoinPage extends React.Component {
                     <div className="form__content">
                         {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
                         <div className="form__input">
-                            <input className="form-control" placeholder="Enter access code" onChange={this.onCodeChange}></input>
+                            <input className="form-control" placeholder="Enter access code" onChange={this.onCodeChange} value={this.state.accessCode}></input>
                         </div>
                         <div className="form__input">    
-                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange}></input>
+                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange} value={this.state.name}></input>
                         </div>
                         <div className="form__buttons">
                             <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick}>Join</Button>

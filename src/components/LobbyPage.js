@@ -34,7 +34,12 @@ class LobbyPage extends React.Component {
             database.ref(`sessions/${databaseCode}/turn`).off();
             database.ref(`sessions/${databaseCode}/object`).off();
         });
-        
+        database.ref(`sessions/${this.props.databaseCode}/turn`).once('value').then((snapshot) => {
+            const index = snapshot.val();
+            if (index === this.props.userId) {
+                database.ref(`sessions/${this.props.databaseCode}/lines`).push(null);
+            }
+        })
     }
 
     componentDidMount() {

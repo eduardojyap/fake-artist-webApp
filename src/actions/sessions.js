@@ -20,7 +20,6 @@ export const addPlayer = (userId) => {
 export const startAddPlayer = (databaseCode,name) => {
     return (dispatch) => {
         return database.ref(`sessions/${databaseCode}/indices`).once('value').then((snapshot)=> {
-            let order = [0,1,2,3,4,5,6,7,8,9];
             for (let i = 0; i < 10; i++) {
                 const childVal = snapshot.child(i).val();
                 if (childVal.name === undefined) {
@@ -33,7 +32,6 @@ export const startAddPlayer = (databaseCode,name) => {
         })
     }
 }
-
 
 export const createSession = (accessCode,databaseCode) => {
     return {
@@ -52,7 +50,7 @@ export const startCreateSession = (name) => {
         return database.ref('sessions').push({accessCode, playing: false,indices: order}).then((ref) => {
             dispatch(createSession(accessCode,ref.key));
             dispatch(startAddPlayer(ref.key,name))
-        })
+        });
     }
 };
 
@@ -70,7 +68,7 @@ export const startJoinSession = (name,accessCode) => {
             let databaseCode = '';
             snapshot.forEach((childSnapshot) => {
                 const currCode = childSnapshot.val().accessCode;
-                if (currCode === accessCode.trim()) {
+                if (currCode === accessCode.trim().toLowerCase()) {
                     if (!childSnapshot.val().playing) {
                         databaseCode = childSnapshot.key;
                     }
@@ -79,7 +77,7 @@ export const startJoinSession = (name,accessCode) => {
             return databaseCode;
         }).then((databaseCode) => {
             if (databaseCode) {
-                dispatch(joinSession(accessCode.trim(),databaseCode));
+                dispatch(joinSession(accessCode.trim().toLowerCase(),databaseCode));
                 dispatch(startAddPlayer(databaseCode,name))
             } else {
                 throw new PermissionDenied();

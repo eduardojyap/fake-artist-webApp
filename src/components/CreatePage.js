@@ -20,7 +20,9 @@ class CreatePage extends React.Component {
     }
     onNameChange = (e) => {
         const name = e.target.value;
-        this.setState(() => ({name}));
+        if (name.length < 14) {
+            this.setState(() => ({name}));
+        }
     }
     onClick(e) {
         e.preventDefault();
@@ -49,7 +51,7 @@ class CreatePage extends React.Component {
                 <div className="content-container content-center">
                     <div className="form__content">
                         <div className="form__input">
-                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange}></input>
+                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange} value={this.state.name}></input>
                         </div>
                         <div className="form__buttons">
                             <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick}>Create</Button>
