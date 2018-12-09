@@ -5,6 +5,7 @@ import { startAddLine, addLine } from '../actions/drawarea';
 import { connect } from 'react-redux';
 import database from '../firebase/firebase';
 import { Button } from 'react-bootstrap';
+
 class DrawArea extends React.Component {
     constructor() {
       super();
@@ -23,6 +24,7 @@ class DrawArea extends React.Component {
     }
   
     componentDidMount() {
+      window.addEventListener("touchmove", function(event) {event.preventDefault();}, {passive: false} );
       document.addEventListener("mouseup", this.handleMouseUp);
       document.addEventListener("touchend", this.handleMouseUp);
       database.ref(`sessions/${this.props.databaseCode}/lines`).on('child_added',(childSnapshot) => {
