@@ -122,7 +122,7 @@ class DrawArea extends React.Component {
       return (
         <div className="drawPage__container">
         <div className="drawArea__content-container content-center">
-          <div className="drawArea__container">
+          <div className="Bouncefix drawArea__container">
               <div 
                   className="drawArea"
                   ref="drawArea" 
@@ -131,9 +131,10 @@ class DrawArea extends React.Component {
                   onMouseDown={this.handleMouseDown} 
                   onMouseMove={this.handleMouseMove}>
                       <Drawing line={this.state.currentLine} turn={this.props.turn} turnId={this.props.turnId}/>
-              </div>
             </div>  
-        </div>
+            </div>
+          </div>
+
         <div className="content-container content-center">
           <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick} disabled={!this.props.turn || this.state.currentLine.isEmpty()}>Add line</Button>
         </div>

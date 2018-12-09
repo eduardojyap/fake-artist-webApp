@@ -10,6 +10,8 @@
     width: 310px;
     height: 310px;
     padding: 5px 0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .drawArea__content-container {
@@ -17,6 +19,13 @@
     max-width:80rem;
     text-align: center
 }
+
+.Bouncefix {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+ 
 
 .drawPage__container {
     padding: 15px 0;
