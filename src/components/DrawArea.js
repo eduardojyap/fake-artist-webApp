@@ -39,7 +39,6 @@ class DrawArea extends React.Component {
 
     handleTouchStart(touchEvent) {
       document.body.classList.add('lock-screen')
-      document.documentElement.classList.add('lock-screen')
 
       const point = this.relativeCoordinatesForEventTouch(touchEvent);
   
@@ -50,6 +49,7 @@ class DrawArea extends React.Component {
     }
   
     handleTouchMove(touchEvent) {
+      
       if (!this.state.isDrawing) {
         return;
       }
@@ -85,8 +85,8 @@ class DrawArea extends React.Component {
     }
   
     handleMouseUp() {
+      document.body.removeEventListener('touchmove', function(event) {event.preventDefault();}, { passive: false });
       document.body.classList.remove('lock-screen');
-      document.documentElement.classList.remove('lock-screen');
       this.setState({ isDrawing: false });
     }
   
