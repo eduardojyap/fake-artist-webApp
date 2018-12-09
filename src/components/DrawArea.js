@@ -21,10 +21,15 @@ class DrawArea extends React.Component {
       this.handleTouchMove = this.handleTouchMove.bind(this);
       this.handleMouseUp = this.handleMouseUp.bind(this);
       this.onClick = this.onClick.bind(this);
+      this.preventDefault = this.preventDefault.bind(this);
+    }
+
+    preventDefault(e){
+      e.preventDefault();
     }
   
     componentDidMount() {
-      window.addEventListener("touchmove", function(event) {event.preventDefault();}, {passive: false} );
+      //window.addEventListener("touchmove", function(event) {event.preventDefault();}, {passive: false} );
       document.addEventListener("mouseup", this.handleMouseUp);
       document.addEventListener("touchend", this.handleMouseUp);
       database.ref(`sessions/${this.props.databaseCode}/lines`).on('child_added',(childSnapshot) => {
@@ -85,7 +90,7 @@ class DrawArea extends React.Component {
     }
   
     handleMouseUp() {
-      document.body.removeEventListener('touchmove', function(event) {event.preventDefault();}, { passive: false });
+      //document.body.removeEventListener('touchmove', function(event) {event.preventDefault();}, { passive: false });
       document.body.classList.remove('lock-screen');
       this.setState({ isDrawing: false });
     }
