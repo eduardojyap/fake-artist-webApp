@@ -16,7 +16,8 @@ const jsx = (
         <AppRouter />
     </Provider>
 );
-
+console.log('hi')
+iNoBounce.disable()
 
 ReactDOM.render(<div>{jsx}</div>,document.getElementById('app'));
 /*
