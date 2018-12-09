@@ -37,6 +37,7 @@ class DrawArea extends React.Component {
 
     handleTouchStart(touchEvent) {
       document.body.classList.add('lock-screen')
+      touchEvent.stopPropagation();
       const point = this.relativeCoordinatesForEventTouch(touchEvent);
   
       this.setState(prevState => ({
@@ -46,7 +47,6 @@ class DrawArea extends React.Component {
     }
   
     handleTouchMove(touchEvent) {
-      
       if (!this.state.isDrawing) {
         return;
       }
