@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppRouter, {history} from './routers/AppRouter'
+import AppRouter from './routers/AppRouter'
 import configureStore from './store/configureStore';
-import {login,logout} from './actions/auth';
 import { Provider} from 'react-redux';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
@@ -16,7 +15,6 @@ const jsx = (
         <AppRouter />
     </Provider>
 );
-console.log('hi')
 iNoBounce.disable()
 
 ReactDOM.render(<div>{jsx}</div>,document.getElementById('app'));

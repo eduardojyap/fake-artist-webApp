@@ -1,7 +1,8 @@
 import React from 'react'
 import Signature from './Signature';
-import { Grid, Row, Button, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { Header } from './Header';
+
 class NewPage extends React.Component {
     constructor() {
         super();

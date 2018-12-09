@@ -1,10 +1,10 @@
 import React from 'react';
 import Immutable from 'immutable';
+import { connect } from 'react-redux';
+import { Button } from 'react-bootstrap';
 import Drawing from './Drawing';
 import { startAddLine, addLine } from '../actions/drawarea';
-import { connect } from 'react-redux';
 import database from '../firebase/firebase';
-import { Button } from 'react-bootstrap';
 
 class DrawArea extends React.Component {
     constructor() {

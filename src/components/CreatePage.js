@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { startCreateSession } from '../actions/sessions'
-import { addPlayer } from '../actions/players'
-import { Header } from './Header';
-import Signature from './Signature';
 import { Button } from 'react-bootstrap';
+import Signature from './Signature';
 import LoadingPage from './LoadingPage'
+import { startCreateSession } from '../actions/sessions'
+import { Header } from './Header';
+
+
 
 class CreatePage extends React.Component {
     constructor() {
@@ -71,8 +71,7 @@ class CreatePage extends React.Component {
     }
 }
 const mapDispatchToProps = (dispatch) => ({
-    startCreateSession: (name) => dispatch(startCreateSession(name)),
-    addPlayer: (name) => dispatch(addPlayer(name))
+    startCreateSession: (name) => dispatch(startCreateSession(name))
 })
 
 export default connect(undefined,mapDispatchToProps)(CreatePage);

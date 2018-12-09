@@ -5,7 +5,7 @@
 .button__content {
     width: 360px;
     padding: 40px 0;
-    border-top: 0.1px solid;
-    border-bottom:0.1px solid;
-    border-color: 	#DCDCDC;
+    border-top: $border-depth solid;
+    border-bottom: $border-depth solid;
+    border-color: 	$border-color;
 }

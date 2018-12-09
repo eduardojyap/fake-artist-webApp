@@ -1,10 +1,9 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Button } from 'react-bootstrap';
 import { startJoinSession } from '../actions/sessions';
 import { Header } from './Header';
 import Signature from './Signature';
-import { Button } from 'react-bootstrap';
 import LoadingPage from './LoadingPage';
 
 class JoinPage extends React.Component {

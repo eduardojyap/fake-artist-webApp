@@ -1,9 +1,9 @@
 import React from 'react';
-import DrawingLine from './DrawingLine';
 import { connect } from 'react-redux';
+import DrawingLine from './DrawingLine';
+
 
 class Drawing extends React.Component {
-        
         render() {
         return (
             <svg className = "drawing">
