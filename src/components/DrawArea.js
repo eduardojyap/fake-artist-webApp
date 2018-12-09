@@ -94,7 +94,9 @@ class DrawArea extends React.Component {
       
       //document.body.removeEventListener('touchmove', function(event) {event.preventDefault();}, { passive: false });
       document.body.classList.remove('lock-screen');
-      iNoBounce.disable()
+      if(iNoBounce.isEnabled()) {
+        iNoBounce.disable()
+      }
       this.setState({ isDrawing: false });
     }
   
