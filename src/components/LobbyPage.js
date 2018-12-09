@@ -8,6 +8,7 @@ import items from '../items';
 import DrawArea from './DrawArea';
 import CategoryObject from './CategoryObject'
 import { Button } from 'react-bootstrap';
+import LoadingPage from './LoadingPage';
 
 class LobbyPage extends React.Component {
     constructor() {
@@ -18,7 +19,8 @@ class LobbyPage extends React.Component {
             turn: false,
             turnId: -1,
             category: '',
-            name:''
+            name:'',
+            loading:false
         }
         this.handleLeave = this.handleLeave.bind(this);
         this.handleStart = this.handleStart.bind(this);
@@ -97,10 +99,12 @@ class LobbyPage extends React.Component {
 
     handleStart(e) {
         e.preventDefault()
+        this.setState(()=>({loading:true}))
         const i = Math.floor(Math.random() * items.length);
         const spy = Math.floor(Math.random() * this.state.users.length);
         database.ref(`sessions/${this.props.databaseCode}/object`).set({...items[i], spy}).then(() => {
             database.ref(`sessions/${this.props.databaseCode}`).update({playing: true})
+            this.setState(()=>({loading:false}))
         })
     }
 
@@ -120,7 +124,7 @@ class LobbyPage extends React.Component {
                     </div>
                     <p>Access code: {this.props.accessCode}</p>
                 </div>}
-                
+                {this.state.loading && <LoadingPage/>}
                 <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing} turnId={this.state.turnId}/>
                 {this.state.playing && <DrawArea turn={this.state.turn} turnId={this.state.turnId}/>}
                 <div className="content-container content-center">

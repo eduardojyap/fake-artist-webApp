@@ -5,6 +5,7 @@ import { startJoinSession } from '../actions/sessions';
 import { Header } from './Header';
 import Signature from './Signature';
 import { Button } from 'react-bootstrap';
+import LoadingPage from './LoadingPage';
 
 class JoinPage extends React.Component {
     constructor() {
@@ -12,7 +13,8 @@ class JoinPage extends React.Component {
         this.state = {
             accessCode: '',
             name: '',
-            errorMessage: ''
+            errorMessage: '',
+            playing: false
         }
         this.onNameChange = this.onNameChange.bind(this);
         this.onCodeChange = this.onCodeChange.bind(this);
@@ -36,10 +38,13 @@ class JoinPage extends React.Component {
 
     onClick(e) {
         e.preventDefault();
+        this.setState(()=>({loading: true}))
         if (this.state.name && this.state.accessCode) {
             this.props.startJoinSession(this.state.name, this.state.accessCode).then(() => {
+                this.setState(()=>({loading: false}))
                 this.props.history.push('/lobby');
             }).catch(() => {
+                this.setState(()=>({loading: false}))
                 this.setState(()=>({errorMessage: "Match does not exist or already in progress."}))
             })
         }
@@ -54,6 +59,7 @@ class JoinPage extends React.Component {
         return (
             <div>
                 <Header />
+                {this.state.loading && <LoadingPage/>}
                 <div className="content-container content-center">
                     <div className="form__content">
                         {this.state.errorMessage && <p>{this.state.errorMessage}</p>}

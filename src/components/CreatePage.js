@@ -6,6 +6,7 @@ import { addPlayer } from '../actions/players'
 import { Header } from './Header';
 import Signature from './Signature';
 import { Button } from 'react-bootstrap';
+import LoadingPage from './LoadingPage'
 
 class CreatePage extends React.Component {
     constructor() {
@@ -15,7 +16,8 @@ class CreatePage extends React.Component {
         this.onRoundsChange = this.onRoundsChange.bind(this);
         this.handleBack = this.handleBack.bind(this);
         this.state = {
-            name: ''
+            name: '',
+            loading: false
         }
     }
     onNameChange = (e) => {
@@ -26,8 +28,10 @@ class CreatePage extends React.Component {
     }
     onClick(e) {
         e.preventDefault();
+        this.setState(() => ({loading: true}))
         if (this.state.name) {
             this.props.startCreateSession(this.state.name).then(() => {
+                this.setState(() => ({loading: false}))
                 this.props.history.push('/lobby');
             }
             )
@@ -48,8 +52,10 @@ class CreatePage extends React.Component {
         return (    
             <div>
                 <Header />
+                {this.state.loading && <LoadingPage/>}
                 <div className="content-container content-center">
                     <div className="form__content">
+                        
                         <div className="form__input">
                             <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange} value={this.state.name}></input>
                         </div>
