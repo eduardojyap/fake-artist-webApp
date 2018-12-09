@@ -122,7 +122,7 @@ class DrawArea extends React.Component {
       return (
         <div className="drawPage__container">
         <div className="drawArea__content-container content-center">
-          <div className="Bouncefix drawArea__container">
+          <div className= {this.state.isDrawing ? "drawArea__container Bouncefix" : "drawArea__container"} >
               <div 
                   className="drawArea"
                   ref="drawArea" 
