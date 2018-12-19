@@ -29,7 +29,6 @@ class DrawArea extends React.Component {
     }
   
     componentDidMount() {
-      //window.addEventListener("touchmove", function(event) {event.preventDefault();}, {passive: false} );
       document.addEventListener("mouseup", this.handleMouseUp);
       document.addEventListener("touchend", this.handleMouseUp);
       database.ref(`sessions/${this.props.databaseCode}/lines`).on('child_added',(childSnapshot) => {
@@ -45,9 +44,7 @@ class DrawArea extends React.Component {
     handleTouchStart(touchEvent) {
       iNoBounce.enable()
       document.body.classList.add('lock-screen')
-
       const point = this.relativeCoordinatesForEventTouch(touchEvent);
-  
       this.setState(prevState => ({
         currentLine: prevState.currentLine.clear().push(point),
         isDrawing: true
@@ -91,8 +88,6 @@ class DrawArea extends React.Component {
     }
   
     handleMouseUp() {
-      
-      //document.body.removeEventListener('touchmove', function(event) {event.preventDefault();}, { passive: false });
       document.body.classList.remove('lock-screen');
       if(iNoBounce.isEnabled()) {
         iNoBounce.disable()
@@ -126,23 +121,27 @@ class DrawArea extends React.Component {
     render() {
       return (
         <div className="drawPage__container">
-        <div className="drawArea__content-container content-center">
-          <div className= {this.state.isDrawing ? "drawArea__container Bouncefix" : "drawArea__container"} >
-              <div 
-                  className="drawArea"
-                  ref="drawArea" 
-                  onTouchStart={this.handleTouchStart} 
-                  onTouchMove={this.handleTouchMove}
-                  onMouseDown={this.handleMouseDown} 
-                  onMouseMove={this.handleMouseMove}>
-                      <Drawing line={this.state.currentLine} turn={this.props.turn} turnId={this.props.turnId}/>
-            </div>  
+          <div className="drawArea__content-container content-center">
+            <div className= {this.state.isDrawing ? "drawArea__container Bouncefix" : "drawArea__container"} >
+                <div 
+                    className="drawArea"
+                    ref="drawArea" 
+                    onTouchStart={this.handleTouchStart} 
+                    onTouchMove={this.handleTouchMove}
+                    onMouseDown={this.handleMouseDown} 
+                    onMouseMove={this.handleMouseMove}>
+                        <Drawing line={this.state.currentLine} turn={this.props.turn} turnId={this.props.turnId}/>
+              </div>  
+              </div>
             </div>
+          <div className="content-container content-center">
+            <Button 
+              bsClass="btn btn-outline-dark btn-m button" 
+              onClick={this.onClick} 
+              disabled={!this.props.turn || this.state.currentLine.isEmpty()}> 
+                Add line
+            </Button>
           </div>
-
-        <div className="content-container content-center">
-          <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick} disabled={!this.props.turn || this.state.currentLine.isEmpty()}>Add line</Button>
-        </div>
         </div>
       );
     }

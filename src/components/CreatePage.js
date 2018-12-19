@@ -31,10 +31,9 @@ class CreatePage extends React.Component {
         this.setState(() => ({loading: true}))
         if (this.state.name) {
             this.props.startCreateSession(this.state.name).then(() => {
-                this.setState(() => ({loading: false}))
-                this.props.history.push('/lobby');
-            }
-            )
+                    this.setState(() => ({loading: false}))
+                    this.props.history.push('/lobby');
+            })
         }
     }
     onRoundsChange(e) {
@@ -55,9 +54,13 @@ class CreatePage extends React.Component {
                 {this.state.loading && <LoadingPage/>}
                 <div className="content-container content-center">
                     <div className="form__content">
-                        
                         <div className="form__input">
-                            <input className="form-control" placeholder="Enter your name" onChange={this.onNameChange} value={this.state.name}></input>
+                            <input 
+                                className="form-control" 
+                                placeholder="Enter your name" 
+                                onChange={this.onNameChange} 
+                                value={this.state.name}>
+                            </input>
                         </div>
                         <div className="form__buttons">
                             <Button bsClass="btn btn-outline-dark btn-m button" onClick={this.onClick}>Create</Button>
