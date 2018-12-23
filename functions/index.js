@@ -62,6 +62,8 @@ exports.onTurnEnd = functions.database.ref('/sessions/{databaseCode}/lines').onW
     })
 })
 
+
+
 /*
 exports.onPlayerLeave = functions.database.ref('/sessions/{databaseCode}/indices/{i}/name').onDelete((snapshot) => {
     return snapshot.ref.parent.once('value').then((snapshot) => {
