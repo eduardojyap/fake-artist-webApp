@@ -29,8 +29,8 @@ class DrawArea extends React.Component {
     }
   
     componentDidMount() {
-      document.addEventListener("mouseup", this.handleMouseUp);
-      document.addEventListener("touchend", this.handleMouseUp);
+      document.addEventListener('mouseup', this.handleMouseUp);
+      document.addEventListener('touchend', this.handleMouseUp);
       database.ref(`sessions/${this.props.databaseCode}/lines`).on('child_added',(childSnapshot) => {
         const line = Immutable.fromJS(JSON.parse(childSnapshot.val().line))
         this.props.addLine(line,childSnapshot.val().turnId);
@@ -38,7 +38,7 @@ class DrawArea extends React.Component {
     }
   
     componentWillUnmount() {
-      document.removeEventListener("mouseup", this.handleMouseUp);
+      document.removeEventListener('mouseup', this.handleMouseUp);
     }
 
     handleTouchStart(touchEvent) {

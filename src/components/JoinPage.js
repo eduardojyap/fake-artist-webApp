@@ -44,14 +44,14 @@ class JoinPage extends React.Component {
                 this.props.history.push('/lobby');
             }).catch(() => {
                 this.setState(()=>({loading: false}))
-                this.setState(()=>({errorMessage: "Match does not exist or already in progress."}))
+                this.setState(()=>({errorMessage: 'Match does not exist or already in progress.'}))
             })
         }
     }
 
     handleBack(e) {
         e.preventDefault();
-        this.props.history.push("/");
+        this.props.history.push('/');
     }
 
     render() {

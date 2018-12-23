@@ -110,7 +110,7 @@ class LobbyPage extends React.Component {
         const spy = Math.floor(Math.random() * this.state.users.length);
         if (this.state.ownWord) {
             if (this.state.word && this.state.category) {
-                database.ref(`sessions/${this.props.databaseCode}/object`).set({category: this.state.category, name:this.state.word, spy}).then(() => {
+                database.ref(`sessions/${this.props.databaseCode}/object`).set({category: this.state.category, word:this.state.word, spy}).then(() => {
                     database.ref(`sessions/${this.props.databaseCode}`).update({playing: true})
                     this.setState(()=>({loading:false}))
                 })
@@ -129,7 +129,7 @@ class LobbyPage extends React.Component {
 
     handleEnd(e) {
         e.preventDefault()
-        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false, turn: -1, 'object/category':'', 'object/name':''})
+        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false, turn: -1, 'object/category':'', 'object/word':''})
         this.props.startRemoveLines(this.props.databaseCode);
     }
 

@@ -44,7 +44,7 @@ class CreatePage extends React.Component {
     }
     handleBack(e) {
         e.preventDefault();
-        this.props.history.push("/");
+        this.props.history.push('/');
     }
 
     render() {
