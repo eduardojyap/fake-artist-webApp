@@ -1,5 +1,6 @@
- functions = require('firebase-functions');
-
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -64,13 +65,33 @@ exports.onTurnEnd = functions.database.ref('/sessions/{databaseCode}/lines').onW
 
 
 
-/*
-exports.onPlayerLeave = functions.database.ref('/sessions/{databaseCode}/indices/{i}/name').onDelete((snapshot) => {
-    return snapshot.ref.parent.once('value').then((snapshot) => {
-        functions.database.ref(`/sessions/${databaseCode}.turn`)
-        return snapshot.val().index;
-    }).then((index) => {
-
+exports.onPlayerLeave = functions.database.ref('/sessions/{databaseCode}/indices/{i}/name').onDelete((change,context) => {
+    return admin.database().ref(`/sessions/${context.params.databaseCode}`).once('value').then((snapshot) => {
+        const playing = snapshot.val().playing;
+        let turn = snapshot.val().turn;
+        const order = snapshot.val().order;
+        const indices = snapshot.val().indices;
+        let found = false;
+        if (playing && context.params.i == turn) {
+            for (let i = 0; i < 10; i++) {
+                const curr_i = order[i]
+                if (found === true && indices[curr_i].name !== undefined) {
+                    turn = indices[curr_i].index;
+                    return admin.database().ref(`/sessions/${context.params.databaseCode}`).update({turn});
+                }
+                if (indices[curr_i].index === turn) {
+                    found = true;
+                }
+            }
+            for (let i = 0; i < 10; i++) {
+                const curr_i = order[i]
+                if (indices[curr_i].name !== undefined) {
+                    turn = indices[curr_i].index;
+                    return admin.database().ref(`/sessions/${context.params.databaseCode}`).update({turn});
+                }
+            }
+        }
+        return null;
     })
+
 })
-*/

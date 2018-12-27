@@ -70,7 +70,6 @@ class LobbyPage extends React.Component {
             })
         })
         window.addEventListener('beforeunload', (e) => {
-            e.preventDefault()
             this.componentCleanup();
         });
         database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {
@@ -171,7 +170,7 @@ class LobbyPage extends React.Component {
                 {!this.state.playing && <div className="content-container content-center">
                     <div className="form__content__top">
                         <input type="checkbox" defaultChecked={this.state.turns} onChange={this.handleTurnsCheck}/> Turns <br />
-                        <input type="checkbox" defaultChecked={this.state.ownWord} onChange={this.handleOwnWordCheck}/> Choose your own word. <br />
+                        <input type="checkbox" defaultChecked={this.state.ownWord} onChange={this.handleOwnWordCheck}/> Choose your own word (Question Master). <br />
                         {this.state.ownWord && <div>
                             <div className="form__input">
                                 <input className="form-control" placeholder="Enter a word" onChange={this.onWordChange} value={this.state.word}></input>
