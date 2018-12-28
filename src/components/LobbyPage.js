@@ -21,15 +21,13 @@ class LobbyPage extends React.Component {
             category: '',
             word:'',
             loading:false,
-            ownWord:false,
-            turns:true
+            ownWord:false
         }
 
         this.handleLeave = this.handleLeave.bind(this);
         this.handleStart = this.handleStart.bind(this);
         this.handleEnd = this.handleEnd.bind(this);
         this.componentCleanup = this.componentCleanup.bind(this);
-        this.handleTurnsCheck = this.handleTurnsCheck.bind(this);
         this.handleOwnWordCheck = this.handleOwnWordCheck.bind(this);
         this.onWordChange = this.onWordChange.bind(this);
         this.onCategoryChange = this.onCategoryChange.bind(this);
@@ -114,7 +112,9 @@ class LobbyPage extends React.Component {
                     this.setState(()=>({loading:false}))
                 })
             } else {
-                this.setState(()=>({loading:false}))
+                this.setState(()=>({
+                    loading:false
+                }))
             }
         } else {
             const i = Math.floor(Math.random() * items.length);
@@ -134,10 +134,6 @@ class LobbyPage extends React.Component {
 
     handleOwnWordCheck() {
         this.setState((prevState)=> ({ownWord: !prevState.ownWord}))
-    }
-
-    handleTurnsCheck() {
-        this.setState((prevState)=> ({turns: !prevState.turns}))
     }
 
     onWordChange(e) {
@@ -169,7 +165,6 @@ class LobbyPage extends React.Component {
                 {this.state.playing && <DrawArea turn={this.state.turn} turnId={this.state.turnId}/>}
                 {!this.state.playing && <div className="content-container content-center">
                     <div className="form__content__top">
-                        <input type="checkbox" defaultChecked={this.state.turns} onChange={this.handleTurnsCheck}/> Turns <br />
                         <input type="checkbox" defaultChecked={this.state.ownWord} onChange={this.handleOwnWordCheck}/> Choose your own word (Question Master). <br />
                         {this.state.ownWord && <div>
                             <div className="form__input">
