@@ -12,7 +12,7 @@ class CategoryObject extends React.Component {
         e.preventDefault();
         this.setState(prevState => ({
             show: !prevState.show
-        }))
+        }));
     }
     render() {
         return (
