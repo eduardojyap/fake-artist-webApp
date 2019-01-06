@@ -95,7 +95,7 @@ export const leaveSession = () => {
 export const startLeaveSession = (databaseCode,userId) => {
     return (dispatch) => {
         return database.ref(`sessions/${databaseCode}/indices/${userId}/name`).remove().then(() => {
-            database.ref(`sessions/${databaseCode}/indices`).off()
+            //database.ref(`sessions/${databaseCode}/indices`).off()
             dispatch(leaveSession());
         })
     }

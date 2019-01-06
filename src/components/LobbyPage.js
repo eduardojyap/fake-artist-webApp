@@ -41,6 +41,7 @@ class LobbyPage extends React.Component {
             database.ref(`sessions/${databaseCode}/playing`).off();
             database.ref(`sessions/${databaseCode}/turn`).off();
             database.ref(`sessions/${databaseCode}/object`).off();
+            database.ref(`sessions/${databaseCode}/qm`).off();
         });
         database.ref(`sessions/${this.props.databaseCode}/turn`).once('value').then((snapshot) => {
             const index = snapshot.val();
@@ -68,7 +69,7 @@ class LobbyPage extends React.Component {
                 return {playing: snapshot.val()};
             })
         })
-        window.addEventListener('beforeunload', (e) => {
+        window.addEventListener('beforeunload', () => {
             this.componentCleanup();
         });
         database.ref(`sessions/${this.props.databaseCode}/turn`).on('value', (snapshot) => {

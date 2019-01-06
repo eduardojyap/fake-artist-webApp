@@ -18,17 +18,3 @@ const jsx = (
 iNoBounce.disable()
 
 ReactDOM.render(<div>{jsx}</div>,document.getElementById('app'));
-/*
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        store.dispatch(login(user.uid));
-        renderApp();
-        if (history.location.pathname === '/') {
-            history.push('/dashboard');
-        }
-    } else {
-        store.dispatch(logout());
-        renderApp()
-        history.push('/');
-    }
-});*/
