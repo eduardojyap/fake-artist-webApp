@@ -1,12 +1,16 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+const num_players = 10
 
 const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i--) {
@@ -18,16 +22,16 @@ const shuffle = (a) => {
 
 exports.onGameStart = 
 functions.database.ref('/sessions/{databaseCode}/playing')
-.onUpdate((change) => {
+.onUpdate((change,context) => {
     const playing = change.after.val();
     if (playing) {
-        return change.after.ref.parent.once('value').then((snapshot) => {
-            return snapshot.val().indices;
-        }).then( (indices) => {
+        return admin.database().ref(`/sessions/${context.params.databaseCode}`).once('value').then((snapshot)=> {
+            const indices = snapshot.val().indices;
+            const qm = snapshot.val().qm;
             let order = [0,1,2,3,4,5,6,7,8,9];
             order = shuffle(order)
-            for (let i = 0; i < 10; i++) {
-                if (indices[order[i]].name !== undefined) {
+            for (let i = 0; i < num_players; i++) {
+                if (indices[order[i]].name !== undefined && qm !== indices[order[i]].index) {
                     return change.after.ref.parent.update({turn: indices[order[i]].index, order})
                 }
             }
@@ -38,13 +42,14 @@ functions.database.ref('/sessions/{databaseCode}/playing')
 
 exports.onTurnEnd = functions.database.ref('/sessions/{databaseCode}/lines').onWrite((change) => {
     return change.after.ref.parent.once('value').then((snapshot) => {
-        let order = snapshot.val().order;
+        const order = snapshot.val().order;
         let turn = snapshot.val().turn;
+        const qm = snapshot.val().qm;
         const indices = snapshot.val().indices;
         let found = false;
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < num_players; i++) {
             const curr_i = order[i]
-            if (found === true && indices[curr_i].name !== undefined) {
+            if (found === true && indices[curr_i].name !== undefined && indices[curr_i].index !== qm) {
                 turn = indices[curr_i].index;
                 return change.after.ref.parent.update({turn})
             }
@@ -52,9 +57,9 @@ exports.onTurnEnd = functions.database.ref('/sessions/{databaseCode}/lines').onW
                 found = true;
             }
         }
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < num_players; i++) {
             const curr_i = order[i]
-            if (indices[curr_i].name !== undefined) {
+            if (indices[curr_i].name !== undefined && indices[curr_i].index !== qm) {
                 turn = indices[curr_i].index;
                 return change.after.ref.parent.update({turn})
             }
@@ -71,11 +76,12 @@ exports.onPlayerLeave = functions.database.ref('/sessions/{databaseCode}/indices
         let turn = snapshot.val().turn;
         const order = snapshot.val().order;
         const indices = snapshot.val().indices;
+        const qm = snapshot.val().qm;
         let found = false;
         if (playing && context.params.i == turn) {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < num_players; i++) {
                 const curr_i = order[i]
-                if (found === true && indices[curr_i].name !== undefined) {
+                if (found === true && indices[curr_i].name !== undefined && indices[curr_i].index !== qm) {
                     turn = indices[curr_i].index;
                     return admin.database().ref(`/sessions/${context.params.databaseCode}`).update({turn});
                 }
@@ -83,9 +89,9 @@ exports.onPlayerLeave = functions.database.ref('/sessions/{databaseCode}/indices
                     found = true;
                 }
             }
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < num_players; i++) {
                 const curr_i = order[i]
-                if (indices[curr_i].name !== undefined) {
+                if (indices[curr_i].name !== undefined && indices[curr_i].index !== qm) {
                     turn = indices[curr_i].index;
                     return admin.database().ref(`/sessions/${context.params.databaseCode}`).update({turn});
                 }

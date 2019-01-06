@@ -21,7 +21,8 @@ class LobbyPage extends React.Component {
             category: '',
             word:'',
             loading:false,
-            ownWord:false
+            ownWord:false,
+            qm:-1
         }
 
         this.handleLeave = this.handleLeave.bind(this);
@@ -78,6 +79,9 @@ class LobbyPage extends React.Component {
                 this.setState({turn: false});
             }
         })
+        database.ref(`sessions/${this.props.databaseCode}/qm`).on('value', (snapshot) => {
+            this.setState({qm: snapshot.val()});
+        })
         database.ref(`sessions/${this.props.databaseCode}/object`).on('value', (snapshot) => {
             const object = snapshot.val();
             if (object !== null) {
@@ -104,11 +108,15 @@ class LobbyPage extends React.Component {
     handleStart(e) {
         e.preventDefault()
         this.setState(()=>({loading:true}))
-        const spy = Math.floor(Math.random() * this.state.users.length);
+        
         if (this.state.ownWord) {
             if (this.state.word && this.state.category) {
+                let spy = Math.floor(Math.random() * this.state.users.length);
+                while (spy === this.props.userId && this.state.users.length > 1) {
+                    spy = Math.floor(Math.random() * this.state.users.length);
+                }
                 database.ref(`sessions/${this.props.databaseCode}/object`).set({category: this.state.category, word:this.state.word, spy}).then(() => {
-                    database.ref(`sessions/${this.props.databaseCode}`).update({playing: true})
+                    database.ref(`sessions/${this.props.databaseCode}`).update({playing: true, qm: this.props.userId})
                     this.setState(()=>({loading:false}))
                 })
             } else {
@@ -118,7 +126,7 @@ class LobbyPage extends React.Component {
             }
         } else {
             const i = Math.floor(Math.random() * items.length);
-            
+            const spy = Math.floor(Math.random() * this.state.users.length);
             database.ref(`sessions/${this.props.databaseCode}/object`).set({...items[i], spy}).then(() => {
                 database.ref(`sessions/${this.props.databaseCode}`).update({playing: true})
                 this.setState(()=>({loading:false}))
@@ -128,7 +136,7 @@ class LobbyPage extends React.Component {
 
     handleEnd(e) {
         e.preventDefault()
-        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false, turn: -1, 'object/category':'', 'object/word':''})
+        database.ref(`sessions/${this.props.databaseCode}`).update({playing: false, turn: -1, qm: -1, 'object/category':'', 'object/word':''})
         this.props.startRemoveLines(this.props.databaseCode);
     }
 
@@ -161,7 +169,7 @@ class LobbyPage extends React.Component {
                     <p>Access code: {this.props.accessCode}</p>
                 </div>}
                 {this.state.loading && <LoadingPage/>}
-                <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing} turnId={this.state.turnId}/>
+                <PlayerList turn={this.state.turn} users={this.state.users} playing={this.state.playing} turnId={this.state.turnId} qm={this.state.qm}/>
                 {this.state.playing && <DrawArea turn={this.state.turn} turnId={this.state.turnId}/>}
                 {!this.state.playing && <div className="content-container content-center">
                     <div className="form__content__top">
