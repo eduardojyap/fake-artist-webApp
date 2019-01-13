@@ -14,7 +14,7 @@ export const addPlayer = (userId) => {
     return {
         type: 'NEW_PLAYER',
         userId
-    }
+    };
 };
 
 export const startAddPlayer = (databaseCode,name) => {
@@ -24,7 +24,7 @@ export const startAddPlayer = (databaseCode,name) => {
                 const childVal = snapshot.child(i).val();
                 if (childVal.name === undefined) {
                     database.ref(`sessions/${databaseCode}/indices/${i}`).update({name}).then(() => {
-                        dispatch(addPlayer(i))
+                        dispatch(addPlayer(i));
                     })
                     return true;
                 }
@@ -38,7 +38,7 @@ export const createSession = (accessCode,databaseCode) => {
         type: 'CREATE_SESSION',
         accessCode,
         databaseCode
-    }
+    };
 };
 
 export const startCreateSession = (name) => {
@@ -49,7 +49,7 @@ export const startCreateSession = (name) => {
         order = order.map((value) => {return {index: value}});
         return database.ref('sessions').push({accessCode, playing: false,indices: order}).then((ref) => {
             dispatch(createSession(accessCode,ref.key));
-            dispatch(startAddPlayer(ref.key,name))
+            dispatch(startAddPlayer(ref.key,name));
         });
     }
 };
