@@ -34,6 +34,8 @@ class CreatePage extends React.Component {
                     this.setState(() => ({loading: false}))
                     this.props.history.push('/lobby');
             })
+        } else {
+            this.setState(()=>({loading: false}))
         }
     }
     onRoundsChange(e) {

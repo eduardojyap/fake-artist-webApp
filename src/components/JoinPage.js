@@ -46,6 +46,8 @@ class JoinPage extends React.Component {
                 this.setState(()=>({loading: false}))
                 this.setState(()=>({errorMessage: 'Match does not exist or already in progress.'}))
             })
+        } else {
+            this.setState(()=>({loading: false}))
         }
     }
 
