@@ -6,6 +6,8 @@ import Drawing from './Drawing';
 import { startAddLine, addLine } from '../actions/drawarea';
 import database from '../firebase/firebase';
 
+const MAX_DRAW_SIZE = 300
+
 class DrawArea extends React.Component {
     constructor() {
       super();
@@ -53,7 +55,7 @@ class DrawArea extends React.Component {
   
     handleTouchMove(touchEvent) {
       
-      if (!this.state.isDrawing) {
+      if (!this.state.isDrawing || this.state.currentLine.size > MAX_DRAW_SIZE) {
         return;
       }
       const point = this.relativeCoordinatesForEventTouch(touchEvent);
@@ -76,7 +78,7 @@ class DrawArea extends React.Component {
     }
   
     handleMouseMove(mouseEvent) {
-      if (!this.state.isDrawing) {
+      if (!this.state.isDrawing  || this.state.currentLine.size > MAX_DRAW_SIZE) {
         return;
       }
       
